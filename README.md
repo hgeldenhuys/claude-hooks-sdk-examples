@@ -10,13 +10,33 @@ This repository contains sophisticated examples that demonstrate best practices 
 
 ## Examples
 
+### [session-context-injection](./session-context-injection/)
+
+Automatically inject session ID and name into Claude's context on every prompt.
+
+**Problem:** Claude doesn't know its own session ID without using tools to read files.
+
+**Solution:** UserPromptSubmit hook that injects session context using `userPromptContext`, making it instantly available.
+
+**Use Cases:**
+- 🎯 Session-specific file creation
+- 📊 Logging and analytics by session
+- 🤖 Dynamic agent workflows
+- 🔍 No tool calls needed to access session info
+
+**Token cost:** ~10 tokens/request (saves 50-100+ tokens by avoiding tool calls)
+
+[View session-context-injection example →](./session-context-injection/)
+
+---
+
 ### [custom-backend](./custom-backend/)
 
 Real-time hook event visualization server with multiple specialized views.
 
 **Features:**
 - 🎨 **Event Dashboard** - Smart polling, session names, JSON payloads
-- 💬 **Chat View** - Markdown rendering, thinking blocks (💭), latest-first display
+- 💬 **Chat View** - Markdown rendering, thinking blocks (💭), latest-first display, session filtering
 - 📁 **File Changes** - Track Read/Write/Edit/Glob/Grep operations
 - 📊 **Transactions** - Event timeline table
 - 📈 **Context Usage** - Analytics dashboard
