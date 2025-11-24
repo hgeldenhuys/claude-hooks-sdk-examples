@@ -44,14 +44,24 @@ The `additionalContext` field in UserPromptSubmit hook output gets injected **di
 
 ## Installation
 
-### 1. Copy the hook
+### 1. Install the SDK
+
+```bash
+bun add claude-hooks-sdk@latest
+# or
+npm install claude-hooks-sdk@latest
+```
+
+### 2. Copy the hook
 
 ```bash
 cp UserPromptSubmit.ts /path/to/your/project/.claude/hooks/
 chmod +x /path/to/your/project/.claude/hooks/UserPromptSubmit.ts
 ```
 
-### 2. Register in `.claude/settings.json`
+**For advanced customization**, use `UserPromptSubmit.advanced.ts` instead - it shows how to add git branch info, environment variables, and custom error handling.
+
+### 3. Register in `.claude/settings.json`
 
 ```json
 {
@@ -71,7 +81,7 @@ chmod +x /path/to/your/project/.claude/hooks/UserPromptSubmit.ts
 }
 ```
 
-### 3. Test
+### 4. Test
 
 Start a new Claude Code session and ask:
 ```
@@ -135,8 +145,10 @@ This is minimal compared to the 50-100+ tokens saved by avoiding tool calls to r
 ## Requirements
 
 - [Bun](https://bun.sh/) runtime
-- [claude-hooks-sdk](https://www.npmjs.com/package/claude-hooks-sdk) v0.7.2 or later
+- [claude-hooks-sdk](https://www.npmjs.com/package/claude-hooks-sdk) v0.8.0 or later (for `createUserPromptSubmitHook()` helper)
 - SessionStart hook configured (for session naming)
+
+**Note:** SDK v0.8.0+ includes the `createUserPromptSubmitHook()` helper which dramatically simplifies this pattern from ~60 lines to just 1 line!
 
 ## How `additionalContext` Works
 
