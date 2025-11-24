@@ -200,6 +200,16 @@ export const APP_HTML = `
 
             <!-- Chat View -->
             <div x-show="currentView === 'chat'" x-transition class="max-w-3xl mx-auto">
+                <!-- Session Selector -->
+                <div class="mb-6 flex items-center gap-3" x-show="sessions.length > 1">
+                    <label class="text-sm font-medium text-gray-700">Session:</label>
+                    <select x-model="selectedSession" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <template x-for="session in sessions" :key="session.name">
+                            <option :value="session.name" x-text="session.name + ' (' + session.count + ' events)'"></option>
+                        </template>
+                    </select>
+                </div>
+
                 <div class="space-y-6">
                     <template x-for="msg in chatMessages" :key="msg.id">
                         <div :class="msg.role === 'user' ? 'ml-12' : 'mr-12'" class="flex flex-col gap-1">
@@ -304,7 +314,8 @@ export const APP_HTML = `
                 currentView: 'dashboard',
                 events: [],
                 lastUpdated: '-',
-                
+                selectedSession: null,
+
                 navItems: [
                     { id: 'dashboard', label: 'Dashboard', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>' },
                     { id: 'chat', label: 'Chat', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>' },
@@ -315,19 +326,45 @@ export const APP_HTML = `
                 get currentViewLabel() {
                     return this.navItems.find(i => i.id === this.currentView)?.label || 'Dashboard';
                 },
-                
+
                 get currentSession() {
                     if (this.events.length > 0) return this.events[0].sessionName;
                     return null;
                 },
 
+                get sessions() {
+                    // Get unique sessions with slug/name (not 'Unknown' or 'unnamed')
+                    const sessionMap = new Map();
+                    this.events.forEach(e => {
+                        if (e.sessionName && e.sessionName !== 'Unknown' && e.sessionName !== 'unnamed') {
+                            if (!sessionMap.has(e.sessionName)) {
+                                sessionMap.set(e.sessionName, {
+                                    name: e.sessionName,
+                                    id: e.sessionId,
+                                    count: 0
+                                });
+                            }
+                            sessionMap.get(e.sessionName).count++;
+                        }
+                    });
+                    return Array.from(sessionMap.values());
+                },
+
                 get chatMessages() {
+                    // Filter events by selected session or auto-select first session with slug
+                    if (!this.selectedSession && this.sessions.length > 0) {
+                        this.selectedSession = this.sessions[0].name;
+                    }
+
                     // Extract conversation similar to the original server logic
                     const messages = [];
                     const seen = new Set();
-                    
+
                     // Clone and reverse to process chronologically (oldest first)
-                    const cronEvents = [...this.events].reverse();
+                    // Filter by selected session
+                    const cronEvents = [...this.events]
+                        .filter(e => !this.selectedSession || e.sessionName === this.selectedSession)
+                        .reverse();
                     
                     cronEvents.forEach(e => {
                         // User prompts - check event.prompt for instant display
