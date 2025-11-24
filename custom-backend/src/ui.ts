@@ -1,5 +1,4 @@
 
-// UI Implementation for Custom Backend
 export const APP_HTML = `
 <!DOCTYPE html>
 <html lang="en">
@@ -294,40 +293,6 @@ export const APP_HTML = `
                         <dd class="mt-1 text-3xl font-semibold text-gray-900" x-text="stats.sessions"></dd>
                     </div>
                 </div>
-
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900">Active Sessions</h3>
-                        <p class="mt-1 text-sm text-gray-500">Sessions tracked with their unique slug identifiers.</p>
-                    </div>
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Session Name (Slug)</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Session ID</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Active</th>
-                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Event Count</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <template x-for="session in uniqueSessions" :key="session.id">
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800" x-text="session.name"></span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono" x-text="session.id"></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" x-text="getTimeAgo(session.lastActive)"></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900 font-semibold" x-text="session.eventCount"></td>
-                                </tr>
-                            </template>
-                            <template x-if="uniqueSessions.length === 0">
-                                <tr>
-                                    <td colspan="4" class="px-6 py-10 text-center text-gray-500 text-sm">No sessions found.</td>
-                                </tr>
-                            </template>
-                        </tbody>
-                    </table>
-                </div>
             </div>
 
         </div>
@@ -415,8 +380,7 @@ export const APP_HTML = `
                             });
                         }
                     });
-
-                    // Reverse to show latest messages first
+                    
                     return messages.reverse();
                 },
 
@@ -447,34 +411,6 @@ export const APP_HTML = `
                     });
                     stats.sessions = sessions.size;
                     return stats;
-                },
-
-                get uniqueSessions() {
-                    const sessionsMap = new Map();
-                    
-                    this.events.forEach(e => {
-                        if (!e.sessionId) return;
-                        
-                        if (!sessionsMap.has(e.sessionId)) {
-                            sessionsMap.set(e.sessionId, {
-                                id: e.sessionId,
-                                name: e.sessionName || 'Unknown',
-                                lastActive: e.timestamp,
-                                eventCount: 0
-                            });
-                        }
-                        
-                        const session = sessionsMap.get(e.sessionId);
-                        session.eventCount++;
-                        
-                        // Update last active if this event is more recent
-                        if (new Date(e.timestamp) > new Date(session.lastActive)) {
-                            session.lastActive = e.timestamp;
-                        }
-                    });
-                    
-                    return Array.from(sessionsMap.values())
-                        .sort((a, b) => new Date(b.lastActive) - new Date(a.lastActive));
                 },
 
                 init() {
