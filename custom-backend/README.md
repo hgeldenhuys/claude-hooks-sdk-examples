@@ -4,34 +4,30 @@ Real-time hook event visualization server with conversation tracking, file chang
 
 ## Features
 
-### Event Dashboard (`/`)
+**New: Modern Single Page Application (SPA) Interface**
+
+### Dashboard
 - Real-time hook event monitoring
-- Smart polling - only refreshes when new events arrive (no janky page flashing)
+- Clean, minimalistic timeline view
 - Session name display with friendly names (e.g., "mutual-lion")
-- Collapsible JSON payload viewer with HTML escaping
+- Collapsible JSON payload viewer
 - Event type badges and timestamps
 
-### Chat View (`/chat`)
+### Chat View
 - Full conversation timeline with user and assistant messages
 - **Markdown rendering** - Code blocks, links, lists, and formatting
 - **Thinking blocks** - Collapsible 💭 sections showing AI reasoning
-- **Latest-first display** - Most recent messages at top (CSS flexbox reverse)
-- **Instant user message display** - Shows prompts immediately from UserPromptSubmit events
-- Message timestamps and role indicators
+- **Message filtering** - Focus purely on conversation flow
 
-### File Changes (`/file-changes`)
+### File Changes
 - Track Read/Write/Edit/Glob/Grep operations
-- File path display with timestamps
-- Collapsible tool input details
+- Visual indicators for operation types (Write vs Read)
+- Collapsible detailed input parameters
 
-### Transactions (`/transactions`)
-- Detailed event timeline table
-- All event types with full metadata
-
-### Context Usage (`/context-usage`)
-- Analytics on event types and tool usage
-- Session activity tracking
-- Event count statistics
+### Analytics
+- Usage statistics
+- Tool usage breakdown
+- File modification counts
 
 ## Quick Start
 
@@ -68,17 +64,14 @@ bun src/server.ts
 
 2. **Server** (`src/server.ts`):
    - Stores events in-memory (latest 50)
-   - Serves multiple views for different use cases
-   - Auto-refreshes UI every 5 seconds
+   - Serves a modern SPA for visualization
+   - Provides JSON API for the frontend
 
 ## API Endpoints
 
 - `POST /events` - Receive hook events (requires API key)
-- `GET /` - Event dashboard
-- `GET /chat` - Conversation view
-- `GET /file-changes` - File operations tracker
-- `GET /transactions` - Detailed event timeline
-- `GET /context-usage` - Usage analytics
+- `GET /api/events` - JSON data for the frontend
+- `GET /` - Main Single Page Application
 - `GET /health` - Health check
 
 ## Configuration
@@ -92,7 +85,9 @@ Environment variables:
 Built with:
 - **Bun** - Runtime and HTTP server
 - **claude-hooks-sdk** - Session naming and transcript parsing
-- **marked.js** - Markdown rendering in chat view (CDN)
+- **Tailwind CSS** - Styling (CDN)
+- **Alpine.js** - Reactive frontend state (CDN)
+- **marked.js** - Markdown rendering (CDN)
 - **Pure TypeScript** - No build step or bundler required
 
 ## Development
