@@ -10,21 +10,31 @@ This repository contains sophisticated examples that demonstrate best practices 
 
 ## Examples
 
-### [session-context-injection](./session-context-injection/)
+### ⭐ [session-context-injection](./session-context-injection/) - **SUPER IMPORTANT!**
 
-Automatically inject session ID and name into Claude's context on every prompt.
+**The most powerful pattern in Claude Code hooks.** Automatically inject session ID and name into Claude's context on every prompt - **eliminating tool calls and making session info instantly available.**
 
 **Problem:** Claude doesn't know its own session ID without using tools to read files.
 
-**Solution:** UserPromptSubmit hook that injects session context using `userPromptContext`, making it instantly available.
+**Solution:** UserPromptSubmit hook with `additionalContext` field - injects session context directly into Claude's system prompt on every turn.
+
+**Why This Is Critical:**
+- ✅ **Zero latency** - Session info available immediately, no tool calls
+- ✅ **Token savings** - Saves 50-100+ tokens per request by avoiding file reads
+- ✅ **Enables advanced workflows** - Session-specific files, logging, dynamic agents
+- ✅ **Always up-to-date** - Fresh session context on every prompt
+- ✅ **Production-ready pattern** - Simple, reliable, tested
 
 **Use Cases:**
-- 🎯 Session-specific file creation
+- 🎯 Session-specific file creation (`.agent/sessions/${sessionName}/`)
 - 📊 Logging and analytics by session
-- 🤖 Dynamic agent workflows
-- 🔍 No tool calls needed to access session info
+- 🤖 Multi-agent workflows that need session awareness
+- 🔍 Session metadata without overhead
+- 📝 Conversation tracking and resumption
 
-**Token cost:** ~10 tokens/request (saves 50-100+ tokens by avoiding tool calls)
+**Token cost:** ~10 tokens/request (tiny compared to 50-100+ saved)
+
+**Status:** ✅ **VERIFIED WORKING** - Tested and confirmed in production
 
 [View session-context-injection example →](./session-context-injection/)
 
