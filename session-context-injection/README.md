@@ -11,7 +11,7 @@ Claude Code doesn't expose the current session ID to the assistant. When Claude 
 
 ## Solution
 
-This `UserPromptSubmit` hook injects the session context into every prompt using the `userPromptContext` field, making it instantly available to Claude without tools.
+This `UserPromptSubmit` hook injects the session context into every prompt using the `additionalContext` field, making it instantly available to Claude without tools.
 
 ## How It Works
 
@@ -96,23 +96,20 @@ This is minimal compared to the 50-100+ tokens saved by avoiding tool calls to r
 - [claude-hooks-sdk](https://www.npmjs.com/package/claude-hooks-sdk) v0.7.2 or later
 - SessionStart hook configured (for session naming)
 
-## How `userPromptContext` Works
+## How `additionalContext` Works
 
 From the [Claude Code hooks documentation](https://code.claude.com/docs/en/hooks.md):
 
 ```typescript
 {
-  exitCode: 0,
-  output: {
-    hookSpecificOutput: {
-      hookEventName: "UserPromptSubmit",
-      userPromptContext: "Additional context to inject into Claude's prompt"
-    }
+  hookSpecificOutput: {
+    hookEventName: "UserPromptSubmit",
+    additionalContext: "Additional context to inject into Claude's prompt"
   }
 }
 ```
 
-The `userPromptContext` field injects text directly into Claude's system prompt for that turn, making it available without appearing in the conversation history.
+The `additionalContext` field injects text directly into Claude's system prompt for that turn, making it available without appearing in the conversation history.
 
 ## Alternative Approaches
 
@@ -124,7 +121,7 @@ The `userPromptContext` field injects text directly into Claude's system prompt 
 - Pro: Zero token cost
 - Con: Not currently supported by Claude Code
 
-### Option 3: This approach (userPromptContext)
+### Option 3: This approach (additionalContext)
 - Pro: Instantly available, no tools needed
 - Pro: Always up-to-date
 - Con: Small token cost per request (~10 tokens)

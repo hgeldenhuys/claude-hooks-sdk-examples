@@ -41,12 +41,9 @@ try {
 
   // Inject session context into Claude's prompt
   console.log(JSON.stringify({
-    exitCode: 0,
-    output: {
-      hookSpecificOutput: {
-        hookEventName: "UserPromptSubmit",
-        userPromptContext: `Current session: ${sessionName} (${input.session_id.substring(0, 8)})`
-      }
+    hookSpecificOutput: {
+      hookEventName: "UserPromptSubmit",
+      additionalContext: `Current session: ${sessionName} (${input.session_id.substring(0, 8)})`
     }
   }));
 
